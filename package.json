@@ -1,0 +1,22 @@
+{
+  "name": "demo-01",
+  "version": "1.0.0",
+  "description": "Complete Node.js Guide",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AadityaSharma/NODE-DEMO-001.git"
+  },
+  "keywords": [],
+  "author": "Aaditya Sharma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AadityaSharma/NODE-DEMO-001/issues"
+  },
+  "homepage": "https://github.com/AadityaSharma/NODE-DEMO-001#readme"
+}
