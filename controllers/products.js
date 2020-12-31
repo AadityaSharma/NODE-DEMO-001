@@ -22,14 +22,15 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  const products = Product.fetchAll();
-  res.render('shop', {
-    prods: products,
-    pageTitle: 'Shop',
-    path: '/',
-    hasProduct: products.length > 0,
-    activeShop: true,
-    productCSS: true,
-    // layout: false // setting false will not render the default layout
+  Product.fetchAll((products) => {
+    res.render('shop', {
+      prods: products,
+      pageTitle: 'Shop',
+      path: '/',
+      hasProduct: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+      // layout: false // setting false will not render the default layout
+    });
   });
 };
