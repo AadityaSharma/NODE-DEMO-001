@@ -35,9 +35,21 @@ User.hasMany(Product);
 
 // sync() will create appropriate tables
 sequelize
-  .sync( { force: true })
+  .sync()
   .then(result => {
-    console.log(result);
+    return User.findByPk(1);
+  })
+  .then(user => {
+    if (!user) {
+      return User.create({
+        name: 'Aadi',
+        email: 'test@aadi.com'
+      });
+    }
+    return Promise.resolve(user);
+  })
+  .then(user => {
+    console.log(user);
     app.listen(3000);
   })
   .catch((err) => {
