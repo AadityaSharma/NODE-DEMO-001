@@ -22,11 +22,10 @@ exports.postAddProduct = (req, res, next) => {
   }).then(result => {
     // console.log(result);
     console.log('Created Product');
+    res.redirect('/');
   }).catch(err => {
     console.log(err);
   });
-
-  res.redirect('/');
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -36,7 +35,8 @@ exports.getEditProduct = (req, res, next) => {
   }
 
   const prodId = req.params.productId;
-  Product.findById(prodId, product => {
+
+  Product.findByPk(prodId).then(product => {
     if (!product) {
       res.redirect('/');
     }
@@ -47,32 +47,60 @@ exports.getEditProduct = (req, res, next) => {
       editing: editMode,
       product: product
     });
+  }).catch(err => {
+    console.log(err);
   });
 };
 
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const price = req.body.price;
-  const description = req.body.description;
-  const product = new Product(prodId, title, imageUrl, description, price);
-  product.save();
-  res.redirect('/admin/products');
+  const updatedTitle = req.body.title;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedPrice = req.body.price;
+  const updatedDescription = req.body.description;
+  
+  Product.findByPk(prodId).then(product => {
+    // if (!product) {
+    //   res.redirect('/');
+    // }
+
+    // if product is not found in table, sequelize will create 
+    // a new product when product.save() is executed
+    product.title = updatedTitle;
+    product.description = updatedDescription;
+    product.price = updatedPrice;
+    product.imageUrl = updatedImageUrl;
+    return product.save();
+  }).then(result => {
+    console.log('Updated Product');
+    res.redirect('/admin/products');
+  }).catch(err => {
+    // This catch block will catch errors for both the above promises 
+    // findByPk(prodId) promise and product.save() promise
+    console.log(err);
+  });
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
+  Product.findAll().then(products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'All Products',
       path: '/products'
     });
+  }).catch(err => {
+    console.log(err);
   });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId);
-  res.redirect('/admin/products');
+  Product.findByPk(prodId).then(product => {
+    return product.destroy();
+  }).then(() => {
+    console.log('DESTROYED PRODUCT');
+    res.redirect('/admin/products');
+  }).catch(err => {
+    console.log(err);
+  });
 }

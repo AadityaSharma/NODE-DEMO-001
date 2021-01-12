@@ -2,14 +2,13 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll().then(([rows, fieldData]) => {
+  Product.findAll().then(products => {
     res.render('shop/product-list', {
       pageTitle: 'All Products',
       path: '/products',
-      prods: rows
+      prods: products
     });
-  })
-  .catch((err) => {
+  }).catch((err) => {
     console.log(err);
   });
 };
@@ -17,9 +16,18 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
 
-  Product.findById(prodId)
-    .then(([rows, fieldData]) => {
-      const product = rows[0];
+  // Product.findAll({ where: {id: prodId} }).then(products => {
+  //   res.render('shop/product-detail', {
+  //     product: products[0],
+  //     pageTitle: products[0].pageTitle,
+  //     path: '/products'
+  //   })
+  // }).catch((err) => {
+  //   console.log(err);
+  // });
+
+  Product.findByPk(prodId)
+    .then(product => {
       res.render('shop/product-detail', {
         product: product,
         pageTitle: product.pageTitle,
@@ -32,22 +40,20 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
-    .then(([rows, fieldData]) => {
-      res.render('shop/index', {
-        pageTitle: 'Shop',
-        path: '/',
-        prods: rows
-      });
-    })
-    .catch((err) => {
-      console.log(err);
+  Product.findAll().then(products => {
+    res.render('shop/index', {
+      pageTitle: 'Shop',
+      path: '/',
+      prods: products
     });
+  }).catch((err) => {
+    console.log(err);
+  });
 };
 
 exports.getCart = (req, res, next) => {
   Cart.getProducts(cart => {
-    Product.fetchAll((products) => {
+    Product.findAll().then(products => {
       const cartProducts = [];
       for (product of products) {
         const cartProductData = cart.products.find(prod => prod.id === product.id);
@@ -60,7 +66,9 @@ exports.getCart = (req, res, next) => {
         path: '/cart',
         products: cartProducts
       });
-    })
+    }).catch((err) => {
+      console.log(err);
+    });
   });
   
 };
