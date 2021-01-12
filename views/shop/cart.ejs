@@ -11,13 +11,19 @@
                             <p>
                                 <b><%= p.title %></b> <i>(quantity: <%= p.cartItem.quantity %>)</i>
                             </p>
-                            <form method="post" action="/cart-delete-item">
+                            <form method="POST" action="/cart-delete-item">
                                 <input type="hidden" name="productId" value="<%= p.id %>"/>
                                 <button type="submit" class="btn">DELETE</button>
                             </form>
                         </li>
                     <% }) %>
                 </ul>
+                <hr/>
+                <div class="centered">
+                    <form method="POST" action="/create-order">
+                        <button type="submit" class="btn">Order Now!</button>
+                    </form>
+                </div>
             <% } else { %>
                 <h1>No products in the cart!</h1>
             <% } %>
