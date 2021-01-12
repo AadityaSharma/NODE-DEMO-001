@@ -15,15 +15,7 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 
-const db = require('./util/database');
-
-// db.end();
-db.execute('SELECT * FROM products')
-  .then(result => {
-    console.log(result[0], result[1]);
-  }).catch(err => {
-    console.log(err);
-  });
+const sequelize = require('./util/database');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,4 +25,13 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+// sync() will create appropriate tables
+sequelize
+  .sync()
+  .then(result => {
+    console.log(result);
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
